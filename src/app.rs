@@ -1,3 +1,4 @@
+use image::{Rgba, RgbaImage};
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 /*
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -11,7 +12,9 @@ pub struct RaytracerApp {
     //#[serde(skip)]
     value: f32,
     //#[serde(skip)]
+    img: RgbaImage,
     render_result: Option<egui::TextureHandle>,
+    update_render_result: bool,
 
     // pixel values
     red: u8,
@@ -27,7 +30,9 @@ impl Default for RaytracerApp {
             // Example stuff:
             label: String::from("Hello, Akino!"),
             value: 2.7,
+            img: RgbaImage::new(800, 600),
             render_result: None,
+            update_render_result: true,
             red: 255,
             green: 255,
             blue: 255,
@@ -67,7 +72,9 @@ impl eframe::App for RaytracerApp {
         let Self {
             label,
             value,
+            img,
             render_result,
+            update_render_result,
             red,
             green,
             blue,
@@ -121,7 +128,12 @@ impl eframe::App for RaytracerApp {
 
             ui.horizontal(|ui| {
                 if ui.button("Add pixel").clicked() {
-                    //
+                    img.put_pixel(
+                        *pixelx as u32,
+                        *pixely as u32,
+                        Rgba([*red, *green, *blue, 255]),
+                    );
+                    *update_render_result = true;
                 }
                 if ui.button("Set background").clicked() {
                     //
@@ -142,7 +154,35 @@ impl eframe::App for RaytracerApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             // The central panel the region left after adding TopPanel's and SidePanel's
 
-            ui.heading("Render result");
+            let size = [img.width() as usize, img.height() as usize];
+            let pixels = img.as_flat_samples();
+
+            let render_texture_handler: &egui::TextureHandle;
+            if *update_render_result == true {
+                render_texture_handler = render_result.insert(ui.ctx().load_texture(
+                    "render",
+                    egui::ColorImage::from_rgba_unmultiplied(size, pixels.as_slice()),
+                ));
+                *update_render_result = false;
+            } else {
+                render_texture_handler = render_result.get_or_insert_with(|| {
+                    ui.ctx()
+                        .load_texture("default", egui::ColorImage::example())
+                });
+            }
+
+            // let render_result: &egui::TextureHandle = render_result.get_or_insert_with(|| {
+            //     println!("Updating render_result");
+            //     *update_render_result = false;
+            //     ui.ctx()
+            //         .load_texture(
+            //             "render",
+            //             egui::ColorImage::from_rgba_unmultiplied(size, pixels.as_slice()))
+            // });
+
+            ui.image(render_texture_handler, render_texture_handler.size_vec2());
+
+            //ui.heading("Render result");
             /*
             ui.hyperlink("https://github.com/emilk/eframe_template");
             ui.add(egui::github_link_file!(
