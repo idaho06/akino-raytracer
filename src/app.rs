@@ -158,7 +158,7 @@ impl eframe::App for RaytracerApp {
             let pixels = img.as_flat_samples();
 
             let render_texture_handler: &egui::TextureHandle;
-            if *update_render_result == true {
+            if *update_render_result {
                 render_texture_handler = render_result.insert(ui.ctx().load_texture(
                     "render",
                     egui::ColorImage::from_rgba_unmultiplied(size, pixels.as_slice()),
