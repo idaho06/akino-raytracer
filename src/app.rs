@@ -6,11 +6,11 @@ use image::{Rgba, RgbaImage};
 */
 pub struct RaytracerApp {
     // Example stuff:
-    label: String,
+    //label: String,
 
     // this how you opt-out of serialization of a member
     //#[serde(skip)]
-    value: f32,
+    //value: f32,
     //#[serde(skip)]
     img: RgbaImage,
     render_result: Option<egui::TextureHandle>,
@@ -28,8 +28,8 @@ impl Default for RaytracerApp {
     fn default() -> Self {
         Self {
             // Example stuff:
-            label: String::from("Hello, Akino!"),
-            value: 2.7,
+            //label: String::from("Hello, Akino!"),
+            //value: 2.7,
             img: RgbaImage::new(800, 600),
             render_result: None,
             update_render_result: true,
@@ -70,8 +70,8 @@ impl eframe::App for RaytracerApp {
     /// Put your widgets into a `SidePanel`, `TopPanel`, `CentralPanel`, `Window` or `Area`.
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         let Self {
-            label,
-            value,
+            //label,
+            //value,
             img,
             render_result,
             update_render_result,
