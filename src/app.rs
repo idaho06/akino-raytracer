@@ -133,13 +133,7 @@ impl eframe::App for RaytracerApp {
 
             ui.horizontal(|ui| {
                 if ui.button("Add pixel").clicked() {
-                    canvas.put_pixel(
-                        *pixelx,
-                        *pixely, 
-                        *red, 
-                        *green, 
-                        *blue
-                    );
+                    canvas.put_pixel(*pixelx, *pixely, *red, *green, *blue);
                     // img.put_pixel(
                     //     *pixelx as u32,
                     //     *pixely as u32,
