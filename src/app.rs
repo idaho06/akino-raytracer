@@ -6,6 +6,7 @@ use crate::canvas::Canvas;
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)] // if we add new fields, give them default values when deserializing old state
 */
+
 pub struct RaytracerApp {
     // Example stuff:
     //label: String,

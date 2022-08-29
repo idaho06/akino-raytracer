@@ -34,12 +34,52 @@ pub mod canvas {
             self.tex.insert(ctx.load_texture(
                 "render",
                 egui::ColorImage::from_rgba_unmultiplied(size, pixels.as_slice()),
+                egui::TextureFilter::Linear,
             ))
         }
 
         pub fn get_tex(&mut self, ctx: &egui::Context) -> &mut egui::TextureHandle {
-            self.tex
-                .get_or_insert_with(|| ctx.load_texture("default", egui::ColorImage::example()))
+            self.tex.get_or_insert_with(|| {
+                ctx.load_texture(
+                    "default",
+                    egui::ColorImage::example(),
+                    egui::TextureFilter::Linear,
+                )
+            })
+        }
+
+        pub fn width(&self) -> u32 {
+            self.img.width()
+        }
+
+        pub fn height(&self) -> u32 {
+            self.img.height()
+        }
+    }
+}
+
+pub mod render {
+    pub struct Viewport {
+        vw: f32,
+        vh: f32,
+        d: f32,
+    }
+
+    impl Viewport {
+        pub fn new() -> Viewport {
+            Viewport {
+                vw: 1.0,
+                vh: 1.0,
+                d: 1.0,
+            }
+        }
+
+        pub fn canvas2viewport(&self, canvas_pos: [u32; 2], canvas_size: [u32; 2]) -> [f32; 3] {
+            [
+                canvas_pos[0] as f32 * (self.vw / canvas_size[0] as f32),
+                canvas_pos[1] as f32 * (self.vh / canvas_size[1] as f32),
+                self.d,
+            ]
         }
     }
 }
